@@ -1,0 +1,29 @@
+{
+    "name": "taoshan98/markdown-to-quill-delta",
+    "description": "Convert Markdown to Quill Delta format in PHP",
+    "keywords": ["markdown", "quill", "delta", "converter"],
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Taoshan",
+            "email": "taoshan98@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MarkdownToQuill\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MarkdownToQuill\\Tests\\": "tests/"
+        }
+    }
+}
