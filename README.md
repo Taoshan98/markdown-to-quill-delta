@@ -3,7 +3,15 @@
 A high-performance PHP library to convert Markdown text into Quill Delta format.
 
 ## Features
-
+- ✅ Checkboxes (Task lists)
+- ✅ Nested Lists (with indentation)
+- ✅ Reference-style Links
+- ✅ Tables (GFM)
+- ✅ Definition Lists
+- ✅ Footnotes
+- ✅ Abbreviations
+- ✅ Highlight (`==`), Subscript (`~`), Superscript (`^`)
+- ✅ Emoji (`:smile:`)
 - ✅ Paragraphs
 - ✅ Headers (H1-H6)
 - ✅ Text formatting (bold, italic, inline code, strikethrough)
@@ -13,7 +21,7 @@ A high-performance PHP library to convert Markdown text into Quill Delta format.
 - ✅ Links
 - ✅ Images
 - ✅ Nested formatting
-- ✅ Horizontal Rules (Divider)
+
 
 ## Installation
 
@@ -79,6 +87,8 @@ echo json_encode([
 | `~~strike~~` | Strikethrough |
 | `- item` | Unordered list |
 | `1. item` | Ordered list |
+| `- [ ] item` | Checkbox (unchecked) |
+| `- [x] item` | Checkbox (checked) |
 | `> quote` | Blockquote |
 | ` ```code``` ` | Code block |
 | `[text](url)` | Link |
@@ -118,6 +128,12 @@ Ordered lists:
 1. First
 2. Second
 3. Third
+```
+
+#### Checkboxes
+```markdown
+- [ ] To do
+- [x] Done
 ```
 
 #### Blockquotes
@@ -242,11 +258,7 @@ Example:
 ]
 ```
 
-## Known Limitations
 
-- Complex nested lists may have limited support
-- Reference-style links are not supported
-- Markdown tables are not supported
 
 ## License
 

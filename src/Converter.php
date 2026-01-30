@@ -23,7 +23,7 @@ class Converter
      * @param string $markdown
      * @return array<array<string, mixed>>
      */
-    public function convert(string $markdown): array
+    public function convertToArray(string $markdown): array
     {
         return $this->parser->parse($markdown)->getOps();
     }
@@ -37,5 +37,16 @@ class Converter
     public function convertToDelta(string $markdown): Delta
     {
         return $this->parser->parse($markdown);
+    }
+
+    /**
+     * Converts Markdown to Delta JSON.
+     *
+     * @param string $markdown
+     * @return string
+     */
+    public function convertToJson(string $markdown): string
+    {
+        return json_encode($this->parser->parse($markdown)->getOps());
     }
 }
