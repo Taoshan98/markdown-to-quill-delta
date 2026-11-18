@@ -1,22 +1,22 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class TextFormattingTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testSimpleText(): void
     {
-        $ops = $this->converter->convertToArray("Hello World");
+        $ops = $this->converter->toDeltaOps("Hello World");
         
         $this->assertEquals('Hello World', $ops[0]['insert']);
         $this->assertEquals("\n", $ops[1]['insert']);
@@ -24,7 +24,7 @@ class TextFormattingTest extends TestCase
 
     public function testBold(): void
     {
-        $ops = $this->converter->convertToArray("This is **bold**.");
+        $ops = $this->converter->toDeltaOps("This is **bold**.");
         
         $this->assertEquals('This is ', $ops[0]['insert']);
         $this->assertEquals('bold', $ops[1]['insert']);
@@ -34,7 +34,7 @@ class TextFormattingTest extends TestCase
 
     public function testItalic(): void
     {
-        $ops = $this->converter->convertToArray("This is *italic*.");
+        $ops = $this->converter->toDeltaOps("This is *italic*.");
         
         $this->assertEquals('This is ', $ops[0]['insert']);
         $this->assertEquals('italic', $ops[1]['insert']);
@@ -44,7 +44,7 @@ class TextFormattingTest extends TestCase
 
     public function testStrikethrough(): void
     {
-        $ops = $this->converter->convertToArray("This is ~~strike~~.");
+        $ops = $this->converter->toDeltaOps("This is ~~strike~~.");
         
         $this->assertEquals('This is ', $ops[0]['insert']);
         $this->assertEquals('strike', $ops[1]['insert']);
@@ -56,7 +56,7 @@ class TextFormattingTest extends TestCase
     {
         // **Bold *Italic***
         $markdown = "**Bold *Italic***";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Expected: "Bold " (bold), "Italic" (bold + italic)
         // Check "Bold "
@@ -73,7 +73,7 @@ class TextFormattingTest extends TestCase
     public function testMixedFormatting(): void
     {
         $markdown = "**Bold** and *Italic* and `Code`";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $this->assertEquals('Bold', $ops[0]['insert']);
         $this->assertEquals(true, $ops[0]['attributes']['bold']);

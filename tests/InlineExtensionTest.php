@@ -1,17 +1,17 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class InlineExtensionTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     private function getPlainText(array $ops): string
@@ -26,7 +26,7 @@ class InlineExtensionTest extends TestCase
     public function testHighlight(): void
     {
         $markdown = "This is ==highlighted== text.";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $found = false;
         foreach ($ops as $op) {
@@ -41,7 +41,7 @@ class InlineExtensionTest extends TestCase
     public function testSubscript(): void
     {
         $markdown = "H~2~O";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $found = false;
         foreach ($ops as $op) {
@@ -57,7 +57,7 @@ class InlineExtensionTest extends TestCase
     public function testSuperscript(): void
     {
         $markdown = "x^2^";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $found = false;
         foreach ($ops as $op) {
@@ -74,7 +74,7 @@ class InlineExtensionTest extends TestCase
     {
         // ~~ should be strike, not double sub
         $markdown = "~~strike~~";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $found = false;
         foreach ($ops as $op) {
@@ -94,7 +94,7 @@ class InlineExtensionTest extends TestCase
     public function testEmoji(): void
     {
         $markdown = "Hello :smile:!";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         // Expected: Hello 😄!
         $text = $this->getPlainText($ops);

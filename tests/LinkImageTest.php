@@ -1,22 +1,22 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class LinkImageTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testLink(): void
     {
-        $ops = $this->converter->convertToArray("This is a [link](https://example.com).");
+        $ops = $this->converter->toDeltaOps("This is a [link](https://example.com).");
         
         $this->assertEquals('This is a ', $ops[0]['insert']);
         
@@ -28,7 +28,7 @@ class LinkImageTest extends TestCase
 
     public function testLinkWithInnerFormatting(): void
     {
-        $ops = $this->converter->convertToArray("Check [**bold** link](https://example.com)");
+        $ops = $this->converter->toDeltaOps("Check [**bold** link](https://example.com)");
         
         // "Check "
         $this->assertEquals('Check ', $ops[0]['insert']);
@@ -45,7 +45,7 @@ class LinkImageTest extends TestCase
 
     public function testImage(): void
     {
-        $ops = $this->converter->convertToArray("![Alt Text](image.jpg)");
+        $ops = $this->converter->toDeltaOps("![Alt Text](image.jpg)");
         
         // Image op is an object insert
         $this->assertEquals(['image' => 'image.jpg'], $ops[0]['insert']);
@@ -62,7 +62,7 @@ class LinkImageTest extends TestCase
         // Usually renders as Image Op with Link Attribute.
         
         $markdown = "[![Alt](img.jpg)](link.com)";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         // Let's see if Parser supports this recursion.
         // InlineParser Logic:

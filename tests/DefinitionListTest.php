@@ -1,23 +1,23 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class DefinitionListTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testDefinitionList(): void
     {
         $markdown = "Term\n: Definition";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Term (Paragraph)
         $this->assertEquals('Term', $ops[0]['insert']);
@@ -38,7 +38,7 @@ class DefinitionListTest extends TestCase
     public function testDefinitionWithInlineFormat(): void
     {
         $markdown = "Term\n: **Bold** Definition";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         $this->assertEquals('Bold', $ops[2]['insert']);
         $this->assertEquals(true, $ops[2]['attributes']['bold']);

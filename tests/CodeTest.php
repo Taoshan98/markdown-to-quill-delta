@@ -1,22 +1,22 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class CodeTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testInlineCode(): void
     {
-        $ops = $this->converter->convertToArray("This is `inline code`.");
+        $ops = $this->converter->toDeltaOps("This is `inline code`.");
         
         $this->assertEquals('This is ', $ops[0]['insert']);
         
@@ -29,33 +29,28 @@ class CodeTest extends TestCase
     public function testGenericCodeBlock(): void
     {
         $markdown = "```\ncode line 1\ncode line 2\n```";
-        $ops = $this->converter->convertToArray($markdown);
-        
-        // Expected: each line is an op with 'code-block': true
-        // line 1 definition
-        $this->assertEquals('code line 1' . "\n", $ops[0]['insert']);
-        $this->assertEquals(true, $ops[0]['attributes']['code-block']);
-        
-        // line 2 definition
-        $this->assertEquals('code line 2' . "\n", $ops[1]['insert']);
-        $this->assertEquals(true, $ops[1]['attributes']['code-block']);
+        $ops = $this->converter->toDeltaOps($markdown);
+
+        $expected = [
+            ['insert' => 'code line 1'],
+            ['insert' => "\n", 'attributes' => ['code-block' => true]],
+            ['insert' => 'code line 2'],
+            ['insert' => "\n", 'attributes' => ['code-block' => true]],
+        ];
+
+        $this->assertEquals($expected, $ops);
     }
 
     public function testLanguageSpecifiedCodeBlock(): void
     {
-        // Quill often uses 'code-block': 'language' or just 'code-block': true depending on format.
-        // Our Parser currently sets 'code-block' => true.
-        // Ideally it should capture language if using a specific delta format extension, 
-        // but core Delta 'code-block' is boolean or string.
-        // Let's check current implementation in Parser.php:
-        // $delta->insert($codeLine . "\n", ['code-block' => true]);
-        // So language is ignored in Delta output currently.
-        // We verify that it parses correctly even if language is present.
-        
         $markdown = "```php\necho 'Hello';\n```";
-        $ops = $this->converter->convertToArray($markdown);
-        
-        $this->assertEquals("echo 'Hello';\n", $ops[0]['insert']);
-        $this->assertEquals(true, $ops[0]['attributes']['code-block']);
+        $ops = $this->converter->toDeltaOps($markdown);
+
+        $expected = [
+            ['insert' => "echo 'Hello';"],
+            ['insert' => "\n", 'attributes' => ['code-block' => 'php']],
+        ];
+
+        $this->assertEquals($expected, $ops);
     }
 }

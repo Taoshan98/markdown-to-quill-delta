@@ -1,25 +1,24 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class HeaderTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
-    /**
-     * @dataProvider headerProvider
-     */
+    #[DataProvider('headerProvider')]
     public function testHeaders(string $markdown, int $level): void
     {
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Expected format: line 1 = Text, line 2 = \n with header attr
         $this->assertEquals("Header $level", $ops[0]['insert']);
@@ -27,7 +26,7 @@ class HeaderTest extends TestCase
         $this->assertEquals($level, $ops[1]['attributes']['header']);
     }
 
-    public function headerProvider(): array
+    public static function headerProvider(): array
     {
         return [
             ['# Header 1', 1],
@@ -42,7 +41,7 @@ class HeaderTest extends TestCase
     public function testHeaderWithInlineFormatting(): void
     {
         $markdown = "# This is **Bold**";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Ops: "This is ", "Bold" (attr bold), "\n" (attr header 1)
         $this->assertEquals("This is ", $ops[0]['insert']);
