@@ -1,22 +1,22 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class BlockquoteTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testSimpleBlockquote(): void
     {
-        $ops = $this->converter->convertToArray("> Quote text");
+        $ops = $this->converter->toDeltaOps("> Quote text");
         
         $this->assertEquals('Quote text', $ops[0]['insert']);
         $this->assertEquals("\n", $ops[1]['insert']);
@@ -26,7 +26,7 @@ class BlockquoteTest extends TestCase
     public function testMultilineBlockquote(): void
     {
         $markdown = "> Line 1\n> Line 2";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Line 1
         $this->assertEquals('Line 1', $ops[0]['insert']);
@@ -41,7 +41,7 @@ class BlockquoteTest extends TestCase
     
     public function testBlockquoteWithInlineFormatting(): void
     {
-        $ops = $this->converter->convertToArray("> Quote with **bold**");
+        $ops = $this->converter->toDeltaOps("> Quote with **bold**");
         
         $this->assertEquals('Quote with ', $ops[0]['insert']);
         $this->assertEquals('bold', $ops[1]['insert']);

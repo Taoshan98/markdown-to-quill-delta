@@ -1,17 +1,17 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class NestedListTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testNestedUnorderedList(): void
@@ -22,7 +22,7 @@ class NestedListTest extends TestCase
             "    - Level 3"
         ]);
 
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Level 1
         $this->assertEquals('Level 1', $ops[0]['insert']);
@@ -47,7 +47,7 @@ class NestedListTest extends TestCase
             "  1. Level 2"
         ]);
 
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Level 1
         $this->assertEquals('Level 1', $ops[0]['insert']);
@@ -67,7 +67,7 @@ class NestedListTest extends TestCase
             "    - Level 3 Bullet"
         ]);
 
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Level 1
         $this->assertEquals('bullet', $ops[1]['attributes']['list']);
@@ -85,7 +85,7 @@ class NestedListTest extends TestCase
     {
         $markdown = "- Level 1\n\t- Level 2";
 
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $this->assertEquals('Level 2', $ops[2]['insert']);
         $this->assertEquals(1, $ops[3]['attributes']['indent']);

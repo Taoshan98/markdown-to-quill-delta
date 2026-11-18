@@ -1,17 +1,17 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class ReferenceLinkTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     private function getPlainText(array $ops): string
@@ -26,7 +26,7 @@ class ReferenceLinkTest extends TestCase
     public function testStandardReferenceLink(): void
     {
         $markdown = "This is a [link][1].\n\n[1]: https://example.com";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Verify structure
         // Op structure might be fragmented, so we look for the link attribute
@@ -46,7 +46,7 @@ class ReferenceLinkTest extends TestCase
     public function testImplicitReferenceLink(): void
     {
         $markdown = "This is a [Google][].\n\n[Google]: https://google.com";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $foundLink = false;
         foreach ($ops as $op) {
@@ -61,7 +61,7 @@ class ReferenceLinkTest extends TestCase
     public function testReferenceWithTitle(): void
     {
         $markdown = "Link [here][id].\n\n[id]: https://test.com \"Test Title\"";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $foundLink = false;
         foreach ($ops as $op) {
@@ -76,7 +76,7 @@ class ReferenceLinkTest extends TestCase
     public function testCaseInsensitivity(): void
     {
         $markdown = "Link [Here][ID].\n\n[id]: https://case.com";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         $foundLink = false;
         foreach ($ops as $op) {
@@ -92,7 +92,7 @@ class ReferenceLinkTest extends TestCase
     {
         // Should remain as plain text if ref not found
         $markdown = "Link [here][missing].";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         $text = $this->getPlainText($ops);
         $this->assertEquals("Link [here][missing].\n", $text);
@@ -103,7 +103,7 @@ class ReferenceLinkTest extends TestCase
         // Note: The newline after "Text" remains because it's a paragraph.
         // The definitions are removed, so we shouldn't see the URL in text.
         $markdown = "Text\n\n[1]: http://url.com";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         $text = $this->getPlainText($ops);
         $this->assertEquals("Text\n", $text);

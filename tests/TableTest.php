@@ -1,23 +1,23 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class TableTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testSimpleTable(): void
     {
         $markdown = "| Header 1 | Header 2 |\n|---|---|\n| Cell 1 | Cell 2 |";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Expected structure is a bit open to interpretation for Quill.
         // We will target a structure where each cell is a line with 'table' attribute set to row ID.
@@ -46,7 +46,7 @@ class TableTest extends TestCase
     {
         $markdown = "| **Bold** | *Italic* |\n|---|---|";
         $markdown = "| **Bold** | *Italic* |\n|---|---|";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
 
         // Cell 1
         $this->assertEquals('Bold', $ops[0]['insert']);

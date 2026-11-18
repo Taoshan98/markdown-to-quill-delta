@@ -1,23 +1,23 @@
 <?php
 
-namespace MarkdownToQuill\Tests;
+namespace Taoshan\QuillMarkdown\Tests;
 
-use MarkdownToQuill\Converter;
+use Taoshan\QuillMarkdown\QuillMarkdown;
 use PHPUnit\Framework\TestCase;
 
 class ListTest extends TestCase
 {
-    private Converter $converter;
+    private QuillMarkdown $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new Converter();
+        $this->converter = new QuillMarkdown();
     }
 
     public function testUnorderedList(): void
     {
         $markdown = "- Item 1\n- Item 2";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         $this->assertEquals('Item 1', $ops[0]['insert']);
         $this->assertEquals("\n", $ops[1]['insert']);
@@ -31,7 +31,7 @@ class ListTest extends TestCase
     public function testOrderedList(): void
     {
         $markdown = "1. First\n2. Second";
-        $ops = $this->converter->convertToArray($markdown);
+        $ops = $this->converter->toDeltaOps($markdown);
         
         $this->assertEquals('First', $ops[0]['insert']);
         $this->assertEquals("\n", $ops[1]['insert']);
